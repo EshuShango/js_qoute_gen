@@ -5,10 +5,10 @@ import toggleLoadSpinner from "../../utils/spinner";
 
 //& QuoteManager Class
 /**
- * @file This file contains the QuoteManager class which is responsible for fetching quotes from an API, displaying them on the page, and allowing the user to tweet them. 
- * @summary The QuoteManager class has three methods: getQuotes(), getNewQuotes(), and tweetQuote(). 
- * getQuotes() fetches the quotes from the API and stores them in a variable for future use. 
- * getNewQuotes() gets a new quote from the API quotes array and displays it on the page. It also handles the click event for fetching a new quote and applies styling based on the quote's length. 
+ * @file This file contains the QuoteManager class which is responsible for fetching quotes from an API, displaying them on the page, and allowing the user to tweet them.
+ * @summary The QuoteManager class has three methods: getQuotes(), getNewQuotes(), and tweetQuote().
+ * getQuotes() fetches the quotes from the API and stores them in a variable for future use.
+ * getNewQuotes() gets a new quote from the API quotes array and displays it on the page. It also handles the click event for fetching a new quote and applies styling based on the quote's length.
  * tweetQuote() constructs a Twitter URL with the current quote and author, then opens that URL in a new window, allowing the user to tweet the quote.
  * @requires toggleLoadSpinner function from "../../utils/spinner"
  * @exports QuoteManager
@@ -27,23 +27,23 @@ export class QuoteManager {
   async getQuotes() {
     // console.log("🪀", "🪀");
     toggleLoadSpinner(true);
-    // //store the api url in a variable called apiUrl
+    //store the api url in a variable called apiUrl
     const apiUrl =
       "https://jacintodesign.github.io/quotes-api/data/quotes.json";
     try {
-    // store the response in a variable called response
-    const response = await fetch(apiUrl);
-    // store the data in a variable called quotesFromApi , response.json() is a promise so we need to await it and store it in a variable called quotesFromApi
-    this.quotesFromApi = await response.json();
-    // you can use console.log to see the data in the console,
-    // you can also use console.table to see the data in a table format
-    // console.table(quotesFromApi );
+      // store the response in a variable called response
+      const response = await fetch(apiUrl);
+      // store the data in a variable called quotesFromApi , response.json() is a promise so we need to await it and store it in a variable called quotesFromApi
+      this.quotesFromApi = await response.json();
+      // you can use console.log to see the data in the console,
+      // you can also use console.table to see the data in a table format
+      // console.table(quotesFromApi );
     } catch (error) {
-    //   // catch any errors and log them to the console
+      //   // catch any errors and log them to the console
       console.warn("Whoops, no quote", error);
     } finally {
-    //   getNewQuote();
-    toggleLoadSpinner(false);
+      //   getNewQuote();
+      toggleLoadSpinner(false);
     }
   }
   //&
@@ -78,6 +78,7 @@ export class QuoteManager {
     quoteTxt.textContent = quote.text;
     // Event Listener
     newQuoteBtn.addEventListener("click", this.getNewQuotes.bind(this));
+    newQuoteBtn.removeEventListener("click", this.getNewQuotes.bind(this));
 
     // toggleLoadSpinner(false);
   }
@@ -92,15 +93,16 @@ export class QuoteManager {
 
     const twitterUrl = `https://twitter.com/intent/tweet?text="${quoteTxt.textContent}" - ${authorTxt.textContent}`; // The Twitter URL constructed with the quote and author text
     window.open(twitterUrl, "_blank"); // Opens the Twitter URL in a new window
+    // Add event listener
     tweetBtn.addEventListener("click", this.tweetQuote.bind(this)); // Adds a click event listener to the Twitter button
+    // Remove event listener
+    tweetBtn.removeEventListener("click", this.tweetQuote.bind(this)); // Removes the click event listener from the Twitter button
     // tweetQuote();
   }
 
   async initialize() {
     await this.getQuotes();
     await this.getNewQuotes();
-
-    console.log("🪀", "🪀");
     await this.tweetQuote();
   }
-} 
+}
