@@ -1,7 +1,7 @@
 "use strict";
 // GLOBALS
-const quoteContainer = document.getElementById("quote-container");
-const loader = document.getElementById("loader");
+const quoteContainerEl = document.getElementById("quote-container");
+const loaderEl = document.getElementById("loaderEl");
 const xTwitterBtn = document.getElementById("twitter");
 
 let apiQuotes = [];
@@ -9,32 +9,36 @@ let apiQuotes = [];
 //&
 /**
  * @description this function shows the loading spinner
- * @param {string} loader - The loader
- * @param {string} quoteContainer - The quote container
+ * @param {string} loaderEl - The loaderEl
+ * @param {string} quoteContainerEl - The quote container
  */
 const showLoadSpinner = () => {
-  loader.hidden = false;
-  quoteContainer.hidden = true;
+  console.log("Showing loaderEl...")
+  console.log("loaderEl element:", loaderEl);
+  console.log("Quote container element isHidden:", quoteContainerEl);
+  loaderEl.hidden = false;
+  quoteContainerEl.hidden = true;
 };
 
 //&
 /**
- * @description this function hides the loading spinner
- * @param {string} loader - The loader
- * @param {string} quoteContainer - The quote container
+ * @description this function hides the loading spinner and shows the quote container
+ * @param {string} loaderEl - The loaderEl
+ * @param {string} quoteContainerEl - The quote container
  */
 const removeLoadSpinner = () => {
-  !loader.hidden ? (quoteContainer.hidden = false) : (loader.hidden = true);
+  console.log("Removing loaderEl...")
+  console.log("loaderEl element:", loaderEl);
+  console.log("Quote container element !isHidden:", quoteContainerEl.hidden);
+  loaderEl.hidden = true;
+  quoteContainerEl.hidden = false;
+  // !loaderEl.hidden ? (quoteContainerEl.hidden = false) : (loaderEl.hidden = true);
 };
 
 //&
 /**
- * @description Get Quotes From API using async await
- * @returns {Promise<void>}
- * @async
- * @param {string} apiUrl - The API URL
- * @param {string} response - The API response
- * @param {string} data - The API data
+ * @description this function gets a new quote from the API and displays it on the page when the new quote button is clicked
+ 
  * @param {string} randomNum - The random number
  * @param {string} quote - The quote
  * @param {string} author - The author
@@ -42,9 +46,9 @@ const removeLoadSpinner = () => {
  * @param {string} quoteElement - The quote element
  * @param {string} authorElement - The author element
  * @param {string} error - The error
- */
+*/
 const getNewQuote = () => {
-  //  showLoadSpinner();
+  // showLoadSpinner();
   const quoteTxt = document.getElementById("quote");
   const authorTxt = document.getElementById("author");
   const newQuoteBtn = document.getElementById("new-quote");
@@ -54,30 +58,34 @@ const getNewQuote = () => {
   const quote = apiQuotes[randomNum];
   // check if author field is blank and replace it with unknown
   !author
-    ? (authorTxt.textContent = "Unknown")
-    : (authorTxt.textContent = quote.author);
+  ? (authorTxt.textContent = "Unknown")
+  : (authorTxt.textContent = quote.author);
   // check quote length to determine styling for long quotes
   quote.text.length > 120
-    ? quoteTxt.classList.add("long-quote")
-    : quoteTxt.classList.remove("long-quote");
-
+  ? quoteTxt.classList.add("long-quote")
+  : quoteTxt.classList.remove("long-quote");
+  
+  console.log("🪀")
   console.table(quote);
   authorTxt.textContent = quote.author;
   quoteTxt.textContent = quote.text;
   // Event Listener
   newQuoteBtn.addEventListener("click", getNewQuote);
+  // removeLoadSpinner();
+ 
 };
 
 //& Get Quotes From API
 /**
- * @description this function gets the quotes from the API
+ * @description this is a async/await function that gets the quotes from the API 
  * @async
  * @param {string} apiUrl - The API URL
  * @param {string} response - The API response
  * @param {string} apiQuotes - The API quotes
  * @param {function} newQuote - The new quote function
- */
+*/
 const getQuotes = async () => {
+  console.log("🪀","🪀")
   showLoadSpinner();
   //store the api url in a variable called apiUrl
   const apiUrl = "https://jacintodesign.github.io/quotes-api/data/quotes.json";
