@@ -1,5 +1,7 @@
 # Quote Generator: v1 🚀
+
 ![Alt text](public/assets/CodeGenV1.png)
+
 A delightful quote generator that brings inspiration to your day. Built with love and passion, the Quote Generator provides random quotes and lets you share them on Twitter with just a click. Powered by Vite for an enhanced development experience.
 
 ## Features 🌟
