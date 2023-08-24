@@ -1,9 +1,16 @@
 "use strict";
 
-// main.js
 import { QuoteManager } from "./components/QuoteManager.js";
 
-window.addEventListener("load", async () => {
+/**
+ * Main entry point of the application.
+ * Initializes the QuoteManager and loads the quotes from the API.
+ *
+ * @async
+ * @function loadEventListener
+ * @returns {Promise<void>} - A Promise that resolves when the QuoteManager is initialized.
+ */
+async function loadEventListener() {
   console.log("window loaded");
 
   const apiUrl = "https://jacintodesign.github.io/quotes-api/data/quotes.json";
@@ -13,12 +20,8 @@ window.addEventListener("load", async () => {
   } catch (error) {
     console.error(error);
     window.removeEventListener("load", loadEventListener);
+    console.warn("window load event listener removed");
   }
-});
-
-const loadEventListener = async () => {
-  console.warn("window load event listener removed");
-  window.removeEventListener("load", loadEventListener);
 };
 
-// window.addEventListener("load", loadEventListener);
+window.addEventListener("load", loadEventListener);

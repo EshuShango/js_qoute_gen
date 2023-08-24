@@ -1,59 +1,61 @@
 "use strict";
-// QuoteManager.js
 
 import toggleLoadSpinner from "../../utils/spinner";
 
 /**
- * @file This file contains the QuoteManager class which is responsible for fetching quotes from an API, displaying them on the page, and allowing the user to tweet them.
+ * @file This file contains the QuoteManager class module which is responsible for fetching quotes from an API, displaying them on the page, and allowing the user to tweet them.
+ * @module QuoteManager
  * @summary The QuoteManager class has three methods:
- * getQuotes(), getNewQuotes(), and tweetQuote().
+ * getQuotes(), getNewQuote(), and tweetQuote().
  * getQuotes() fetches the quotes from the API and stores them in a variable for future use.
- * getNewQuotes() gets a new quote from the API quotes array and displays it on the page. It also handles the click event for fetching a new quote and applies styling based on the quote's length.
+ * getNewQuote() gets a new quote from the API quotes array and displays it on the page. It also handles the click event for fetching a new quote and applies styling based on the quote's length.
  * tweetQuote() constructs a Twitter URL with the current quote and author, then opens that URL in a new window, allowing the user to tweet the quote.
  * @requires toggleLoadSpinner function from "../../utils/spinner"
  * @exports QuoteManager
  */
 export class QuoteManager {
-  constructor(apiUrl) {
+  constructor(apiUrl = String()) {
     this.apiUrl = apiUrl;
     this.quotesFromApi = [];
   }
 
   /**
-   * @description This async function fetches the quotes from the API and stores them in a variable for future use. Also calls the getNewQuote() to display a quote.
+   * @description This async function fetches the quotes from the API and stores them in a variable for future use.
    * @async
+   * @returns {Array} - An array of quotes fetched from the API.
    */
   async getQuotes() {
-    // console.log("🪀", "🪀");
     toggleLoadSpinner(true);
 
-    const apiUrl =
-      "https://jacintodesign.github.io/quotes-api/data/quotes.json";
+    const apiUrl = this.apiUrl;
     try {
-      const response = await fetch(apiUrl);
+      const apiRes = await fetch(apiUrl);
+      this.quotesFromApi = await apiRes.json();
 
-      this.quotesFromApi = await response.json();
+      this.getNewQuote();
 
-      // use console.table to see the data in a table format
-      // console.table(quotesFromApi );
+      return this.quotesFromApi;
+
+      // console.table(quotesFromApi ); --to see data in table format
     } catch (error) {
-      console.warn("Whoops, no quote", error);
+      console.warn("Failed to fetch quotes:", error);
+      return null;
     } finally {
       toggleLoadSpinner(false);
     }
   }
 
   /**
-  @description This function shows and hides the loading spinner as needed, it also gets a new quote from the API quotes array and displays it on the page.  It also handles the click event for fetching a new quote and applies styling based on the quote's length.
+  @description This function selects a new quote from the `quotesFromApi` array and displays it on the page.  
   */
-  async getNewQuotes() {
+  getNewQuote() {
     const quoteTxt = document.getElementById("quote");
     const authorTxt = document.getElementById("author");
     const newQuoteBtn = document.getElementById("new-quote");
 
-    const randomNum = Math.floor(Math.random() * this.quotesFromApi.length);
+    const randoQuote = Math.floor(Math.random() * this.quotesFromApi.length);
 
-    const quote = this.quotesFromApi[randomNum];
+    const quote = this.quotesFromApi[randoQuote];
 
     !quote.author
       ? (authorTxt.textContent = "Unknown")
@@ -66,8 +68,8 @@ export class QuoteManager {
     authorTxt.textContent = quote.author;
     quoteTxt.textContent = quote.text;
 
-    newQuoteBtn.addEventListener("click", this.getNewQuotes.bind(this));
-    newQuoteBtn.removeEventListener("click", this.getNewQuotes.bind(this));
+    newQuoteBtn.addEventListener("click", this.getNewQuote.bind(this));
+    newQuoteBtn.removeEventListener("click", this.getNewQuote.bind(this));
 
     return;
   }
@@ -75,12 +77,13 @@ export class QuoteManager {
   /**
    * @description This function constructs a Twitter URL with the current quote and author, then opens that URL in a new window, allowing the user to tweet the quote.
    */
-  async tweetQuote() {
+  tweetQuote() {
     const quoteTxt = document.getElementById("quote");
     const authorTxt = document.getElementById("author");
     const tweetBtn = document.getElementById("twitter");
 
     const twitterUrl = `https://twitter.com/intent/tweet?text="${quoteTxt.textContent}" - ${authorTxt.textContent}`;
+
     window.open(twitterUrl, "_blank");
 
     tweetBtn.addEventListener("click", this.tweetQuote.bind(this));
@@ -89,9 +92,19 @@ export class QuoteManager {
     return;
   }
 
+  /**
+   * @description This async function initializes the `QuoteManager` class by fetching the quotes from the API and displaying the first quote.
+   * @async
+   */
   async initialize() {
-    await this.getQuotes();
-    await this.getNewQuotes();
-    await this.tweetQuote();
+    try {
+      await this.getQuotes();
+      console.log("Quotes fetched successfully");
+
+      this.getNewQuote();
+      this.tweetQuote();
+    } catch (error) {
+      console.warn("Failed to initialize QuoteManager:", error);
+    }
   }
 }
