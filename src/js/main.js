@@ -8,6 +8,7 @@ import { QuoteManager } from "./components/QuoteManager.js";
  *
  * @async
  * @function loadEventListener
+ * @param {void} void - This function does not accept any parameters.
  * @returns {Promise<void>} - A Promise that resolves when the QuoteManager is initialized.
  */
 async function loadEventListener() {
@@ -16,7 +17,7 @@ async function loadEventListener() {
   const apiUrl = "https://jacintodesign.github.io/quotes-api/data/quotes.json";
   const quoteManager = new QuoteManager(apiUrl);
   try {
-    await quoteManager.initialize();
+    await quoteManager.init();
   } catch (error) {
     console.error(error);
     window.removeEventListener("load", loadEventListener);

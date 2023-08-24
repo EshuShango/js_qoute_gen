@@ -1,27 +1,34 @@
 "use strict";
 
-import toggleLoadSpinner from "../../utils/spinner";
+import { toggleLoadSpinner } from "../../utils/spinner";
+import { toggleXbtn } from "../../utils/toggleBtn.js";
 
 /**
- * @file This file contains the QuoteManager class module which is responsible for fetching quotes from an API, displaying them on the page, and allowing the user to tweet them.
+ * @file This file contains the QuoteManager class module which is responsible for fetching quotes from an API, displaying them on the page,
  * @module QuoteManager
- * @summary The QuoteManager class has three methods:
- * getQuotes(), getNewQuote(), and tweetQuote().
- * getQuotes() fetches the quotes from the API and stores them in a variable for future use.
- * getNewQuote() gets a new quote from the API quotes array and displays it on the page. It also handles the click event for fetching a new quote and applies styling based on the quote's length.
- * tweetQuote() constructs a Twitter URL with the current quote and author, then opens that URL in a new window, allowing the user to tweet the quote.
- * @requires toggleLoadSpinner function from "../../utils/spinner"
+ * @method `getQuotes()`
+ * @method `getNewQuote()`
+ * @summary The QuoteManager class has two methods: `getQuotes()` and `getNewQuote()`.
+ * `getQuotes()` fetches the quotes from the API and stores them in a variable for future use.
+ * `getNewQuote()` gets a new quote from the API quotes array and displays it on the page. It also handles the click event for fetching a new quote and applies styling based on the quote's length.
+ * @param {string} apiUrl - Accepts a string as a parameter. The string is the URL of the API to fetch the quotes from.
  * @exports QuoteManager
  */
 export class QuoteManager {
   constructor(apiUrl = String()) {
+    if (typeof apiUrl !== "string" || apiUrl.trim() === "")
+      console.warn(
+        "Warning: Invalid or empty apiUrl provided to QuoteManager constructor. Using default apiUrl."
+      );
+
     this.apiUrl = apiUrl;
     this.quotesFromApi = [];
   }
 
   /**
-   * @description This async function fetches the quotes from the API and stores them in a variable for future use.
+   * This async function fetches the quotes from the API and stores them in a variable for future use.
    * @async
+   * @param {void} - This function does not accept any parameters.
    * @returns {Array} - An array of quotes fetched from the API.
    */
   async getQuotes() {
@@ -46,8 +53,9 @@ export class QuoteManager {
   }
 
   /**
-  @description This function selects a new quote from the `quotesFromApi` array and displays it on the page.  
-  */
+   * This function selects a new quote from the `quotesFromApi` array and displays it on the page.
+   * @param {void} - This function does not accept any parameters.
+   */
   getNewQuote() {
     const quoteTxt = document.getElementById("quote");
     const authorTxt = document.getElementById("author");
@@ -75,34 +83,17 @@ export class QuoteManager {
   }
 
   /**
-   * @description This function constructs a Twitter URL with the current quote and author, then opens that URL in a new window, allowing the user to tweet the quote.
-   */
-  tweetQuote() {
-    const quoteTxt = document.getElementById("quote");
-    const authorTxt = document.getElementById("author");
-    const tweetBtn = document.getElementById("twitter");
-
-    const twitterUrl = `https://twitter.com/intent/tweet?text="${quoteTxt.textContent}" - ${authorTxt.textContent}`;
-
-    window.open(twitterUrl, "_blank");
-
-    tweetBtn.addEventListener("click", this.tweetQuote.bind(this));
-
-    tweetBtn.removeEventListener("click", this.tweetQuote.bind(this));
-    return;
-  }
-
-  /**
-   * @description This async function initializes the `QuoteManager` class by fetching the quotes from the API and displaying the first quote.
+   * Initializes the `QuoteManager` class by fetching the quotes from the API and displaying the first quote.
    * @async
+   * @param {void} - This function does not accept any parameters.
    */
-  async initialize() {
+  async init() {
     try {
       await this.getQuotes();
       console.log("Quotes fetched successfully");
 
       this.getNewQuote();
-      this.tweetQuote();
+      toggleXbtn(this.apiUrl);
     } catch (error) {
       console.warn("Failed to initialize QuoteManager:", error);
     }
