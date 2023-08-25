@@ -33,7 +33,7 @@ export class QuoteManager {
    */
   async getQuotes() {
     toggleLoadSpinner(true);
-
+    console.log("🪀");
     const apiUrl = this.apiUrl;
     try {
       const apiRes = await fetch(apiUrl);
@@ -43,7 +43,7 @@ export class QuoteManager {
 
       return this.quotesFromApi;
 
-      // console.table(quotesFromApi ); --to see data in table format
+      // console.table(this.quotesFromApi );// --to see data in table format
     } catch (error) {
       console.warn("Failed to fetch quotes:", error);
       return null;
