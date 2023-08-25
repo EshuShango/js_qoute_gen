@@ -1,6 +1,6 @@
 "use strict";
 
-import { QuoteManager } from "./components/QuoteManager.js";
+import  QuoteManager  from "./components/QuoteManager.js";
 
 /**
  * Main entry point of the application.

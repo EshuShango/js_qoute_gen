@@ -14,7 +14,7 @@ import { toggleXbtn } from "../../utils/toggleBtn.js";
  * @param {string} apiUrl - Accepts a string as a parameter. The string is the URL of the API to fetch the quotes from.
  * @exports QuoteManager
  */
-export class QuoteManager {
+export default class QuoteManager {
   constructor(apiUrl = String()) {
     if (typeof apiUrl !== "string" || apiUrl.trim() === "")
       console.warn(
@@ -33,7 +33,7 @@ export class QuoteManager {
    */
   async getQuotes() {
     toggleLoadSpinner(true);
-    console.log("🪀");
+    // console.log("🪀");
     const apiUrl = this.apiUrl;
     try {
       const apiRes = await fetch(apiUrl);
@@ -43,7 +43,6 @@ export class QuoteManager {
 
       return this.quotesFromApi;
 
-      // console.table(this.quotesFromApi );// --to see data in table format
     } catch (error) {
       console.warn("Failed to fetch quotes:", error);
       return null;
@@ -51,20 +50,21 @@ export class QuoteManager {
       toggleLoadSpinner(false);
     }
   }
-
+  
   /**
    * This function selects a new quote from the `quotesFromApi` array and displays it on the page.
    * @param {void} - This function does not accept any parameters.
-   */
-  getNewQuote() {
-    const quoteTxt = document.getElementById("quote");
-    const authorTxt = document.getElementById("author");
-    const newQuoteBtn = document.getElementById("new-quote");
-
-    const randoQuote = Math.floor(Math.random() * this.quotesFromApi.length);
-
-    const quote = this.quotesFromApi[randoQuote];
-
+  */
+ getNewQuote() {
+   const quoteTxt = document.getElementById("quote");
+   const authorTxt = document.getElementById("author");
+   const newQuoteBtn = document.getElementById("new-quote");
+   
+   const randoQuote = Math.floor(Math.random() * this.quotesFromApi.length);
+   
+   const quote = this.quotesFromApi[randoQuote];
+   
+   console.table(quote );// --to see data in table format
     !quote.author
       ? (authorTxt.textContent = "Unknown")
       : (authorTxt.textContent = quote.author);
